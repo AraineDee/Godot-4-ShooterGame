@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3 uid="uid://bsvu4bm6asqat"]
+
+[ext_resource type="Script" path="res://Scenes/Turret.gd" id="1_6ij37"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_fo2i7"]
+size = Vector3(1, 0.2, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_r463v"]
+top_radius = 0.2
+bottom_radius = 0.2
+height = 1.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_43c8p"]
+
+[node name="Turret" type="Node3D"]
+script = ExtResource("1_6ij37")
+
+[node name="BaseMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+mesh = SubResource("BoxMesh_fo2i7")
+
+[node name="TurretHead" type="Node3D" parent="."]
+
+[node name="HeadMesh" type="MeshInstance3D" parent="TurretHead"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.8, -0.230989)
+mesh = SubResource("CylinderMesh_r463v")
+
+[node name="InteractArea" type="Area3D" parent="TurretHead"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.807477, 0.284057)
+collision_layer = 16
+collision_mask = 8
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TurretHead/InteractArea"]
+shape = SubResource("BoxShape3D_43c8p")
+
+[connection signal="body_entered" from="TurretHead/InteractArea" to="." method="_on_interact_area_body_entered"]
+[connection signal="body_exited" from="TurretHead/InteractArea" to="." method="_on_interact_area_body_exited"]

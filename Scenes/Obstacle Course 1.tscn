@@ -1,0 +1,123 @@
+[gd_scene load_steps=10 format=3 uid="uid://ssi53sieinr7"]
+
+[ext_resource type="PackedScene" uid="uid://dj26sacnhty4r" path="res://addons/devblocks/blocks/basic_block.tscn" id="1_botol"]
+[ext_resource type="Script" path="res://Scenes/Map.gd" id="1_cmxyg"]
+[ext_resource type="PackedScene" uid="uid://7gv6q50fuutj" path="res://Scenes/Player/player.tscn" id="2_pa5m1"]
+[ext_resource type="PackedScene" uid="uid://ctidmefn05cu7" path="res://Scenes/Target/target.tscn" id="3_7nvs4"]
+[ext_resource type="Script" path="res://Scenes/Checkpoint.gd" id="5_hbajf"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_6g5uc"]
+
+[sub_resource type="Sky" id="Sky_ivwug"]
+sky_material = SubResource("ProceduralSkyMaterial_6g5uc")
+
+[sub_resource type="Environment" id="Environment_t5vy3"]
+background_mode = 2
+background_color = Color(0.2139, 0.570975, 0.69, 1)
+sky = SubResource("Sky_ivwug")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ofxh1"]
+size = Vector3(10, 1, 10)
+
+[node name="Map" type="Node3D"]
+script = ExtResource("1_cmxyg")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_t5vy3")
+
+[node name="DirectionalLight3d" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.966349, 0.250904, -0.056709, 0.182362, -0.512743, 0.838951, 0.181419, -0.821061, -0.541244, -0.00693703, 59.5145, -109.348)
+light_energy = 1.232
+light_indirect_energy = 0.884
+light_volumetric_fog_energy = 0.768
+shadow_enabled = true
+
+[node name="Player" parent="." groups=["Players"] instance=ExtResource("2_pa5m1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023942, 1.075, 0.0312814)
+
+[node name="Level0" type="Node3D" parent="." groups=["Levels"]]
+
+[node name="StartBlock" parent="Level0" instance=ExtResource("1_botol")]
+transform = Transform3D(10, 0, 0, 0, 0.15, 0, 0, 0, 10, 0, 0, 0)
+
+[node name="BasicBlock2" parent="Level0" instance=ExtResource("1_botol")]
+transform = Transform3D(1, 0, 0, 0, 11.5656, 0, 0, 0, -18.7097, -4.34195, 5.25975, -16.0996)
+block_color_group = 3
+
+[node name="BasicBlock3" parent="Level0" instance=ExtResource("1_botol")]
+transform = Transform3D(1, 0, 0, 0, 11.5656, 0, 0, 0, -18.7097, 4.71067, 5.19582, -22.9989)
+block_color_group = 3
+
+[node name="Target" parent="Level0" groups=["Targets"] instance=ExtResource("3_7nvs4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.19723, -28.3194)
+
+[node name="Checkpoint" type="Area3D" parent="Level0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+script = ExtResource("5_hbajf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level0/Checkpoint"]
+shape = SubResource("BoxShape3D_ofxh1")
+
+[node name="Level1" type="Node3D" parent="." groups=["Levels"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -40.855)
+
+[node name="StartBlock" parent="Level1" instance=ExtResource("1_botol")]
+transform = Transform3D(10, 0, 0, 0, 0.15, 0, 0, 0, 10, 0, 0, 0)
+
+[node name="BasicBlock" parent="Level1" instance=ExtResource("1_botol")]
+transform = Transform3D(4, 0, 0, 0, 0.5, 0, 0, 0, 4, 0, 8.96814, -12.5103)
+block_color_group = 1
+
+[node name="BasicBlock2" parent="Level1" instance=ExtResource("1_botol")]
+transform = Transform3D(4, 0, 0, 0, 0.5, 0, 0, 0, 4, 0, 8.96814, -23.3534)
+block_color_group = 1
+
+[node name="Checkpoint" type="Area3D" parent="Level1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+script = ExtResource("5_hbajf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level1/Checkpoint"]
+shape = SubResource("BoxShape3D_ofxh1")
+
+[node name="Level2" type="Node3D" parent="." groups=["Levels"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -75.5177)
+
+[node name="StartBlock" parent="Level2" instance=ExtResource("1_botol")]
+transform = Transform3D(10, 0, 0, 0, 0.15, 0, 0, 0, 10, 0, 0, 0)
+
+[node name="BasicBlock" parent="Level2" instance=ExtResource("1_botol")]
+transform = Transform3D(0.5, 0, 0, 0, 7.31177, 0, 0, 0, 3, 1.89572, 2.20579, -8.02563)
+block_color_group = 2
+
+[node name="BasicBlock2" parent="Level2" instance=ExtResource("1_botol")]
+transform = Transform3D(0.5, 0, 0, 0, 7.31177, 0, 0, 0, 3, -1.76576, 2.20579, -11.3344)
+block_color_group = 2
+
+[node name="BasicBlock3" parent="Level2" instance=ExtResource("1_botol")]
+transform = Transform3D(0.5, 0, 0, 0, 7.31177, 0, 0, 0, 3, 2.42507, 2.20579, -14.7922)
+block_color_group = 2
+
+[node name="Checkpoint" type="Area3D" parent="Level2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+script = ExtResource("5_hbajf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level2/Checkpoint"]
+shape = SubResource("BoxShape3D_ofxh1")
+
+[node name="Level3" type="Node3D" parent="." groups=["Levels"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -98.0897)
+
+[node name="StartBlock" parent="Level3" instance=ExtResource("1_botol")]
+transform = Transform3D(10, 0, 0, 0, 0.15, 0, 0, 0, 10, 0, 0, 0)
+
+[node name="Checkpoint" type="Area3D" parent="Level3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+script = ExtResource("5_hbajf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level3/Checkpoint"]
+shape = SubResource("BoxShape3D_ofxh1")
+
+[connection signal="body_entered" from="Level0/Checkpoint" to="Level0/Checkpoint" method="_on_body_entered"]
+[connection signal="body_entered" from="Level1/Checkpoint" to="Level1/Checkpoint" method="_on_body_entered"]
+[connection signal="body_entered" from="Level2/Checkpoint" to="Level2/Checkpoint" method="_on_body_entered"]
+[connection signal="body_entered" from="Level3/Checkpoint" to="Level3/Checkpoint" method="_on_body_entered"]
