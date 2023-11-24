@@ -5,6 +5,7 @@ extends CharacterBody3D
 @onready var Cam = $Head/Camera3d as Camera3D
 @onready var Equipment_Manager = $EquipmentManager
 
+@export var gunshot_emitter : AudioStreamPlayer3D
 @export var health : Node
 
 var mouseSensitivity = 1000
@@ -100,6 +101,11 @@ func _swap_mouse_mode():
 
 var friction_mod = 1
 func _process_movement(delta):
+	if velocity.length() > 0.1 and is_on_floor():
+		$MovementAudioEmitter.volume_db = 0
+	else: 
+		$MovementAudioEmitter.volume_db = -100
+	
 	if on_turret:
 		_handle_turret_movement(delta)
 	elif(is_on_floor()):

@@ -55,10 +55,10 @@ func SendPlayerInformation(name, id):
 			SendPlayerInformation.rpc(GameManager.Players[i].name, i)
 
 @rpc("any_peer","call_local")
-func StartGame():
-	var sceneInst = range_scene.instantiate()
+func StartGame(new_scene):
+	var sceneInst = new_scene.instantiate()
 	get_tree().root.add_child(sceneInst)
-	self.hide()
+	self.queue_free()
 	
 func hostGame():
 	peer = ENetMultiplayerPeer.new()
@@ -99,11 +99,15 @@ func _on_quit_button_down():
 
 
 func _on_obstacle_course_button_down():
-	StartGame.rpc()
+	if peer == null:
+		SendPlayerInformation($NameEdit.text, 1)	
+	StartGame.rpc(obstacle_course_scene)
 
 
 func _on_range_button_down():
-	StartGame.rpc()
+	if peer == null:
+		SendPlayerInformation($NameEdit.text, 1)	
+	StartGame.rpc(range_scene)
 	
 @rpc("any_peer", "call_local")
 func _go_to_scene(scene):

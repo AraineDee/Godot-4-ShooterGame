@@ -20,6 +20,8 @@ anchor1 = NodePath("Anchor1")
 [node name="Anchor1" parent="." instance=ExtResource("2_xclgl")]
 
 [node name="Line" type="Area3D" parent="."]
+collision_layer = 16
+collision_mask = 8
 
 [node name="LineMesh" type="MeshInstance3D" parent="Line"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)

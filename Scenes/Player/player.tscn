@@ -1,12 +1,15 @@
-[gd_scene load_steps=13 format=3 uid="uid://7gv6q50fuutj"]
+[gd_scene load_steps=16 format=3 uid="uid://7gv6q50fuutj"]
 
 [ext_resource type="Script" path="res://Scenes/Player/player.gd" id="1_1w47b"]
 [ext_resource type="PackedScene" uid="uid://dyu1p85lcff34" path="res://Scenes/Player/PauseMenu.tscn" id="2_ayof8"]
 [ext_resource type="Script" path="res://Scenes/Components/HitboxComponent.gd" id="3_4c68y"]
+[ext_resource type="Texture2D" uid="uid://b0wwtt2fq7l1n" path="res://Resources/Textures/crosshair.png" id="3_cxjrq"]
 [ext_resource type="Script" path="res://Scenes/Player/EquipmentManager.gd" id="3_detgp"]
 [ext_resource type="Script" path="res://Scenes/Components/HealthComponent.gd" id="4_5eg73"]
 [ext_resource type="Script" path="res://Scenes/Abilities/Fire.gd" id="4_gbn3t"]
-[ext_resource type="Texture2D" uid="uid://b0wwtt2fq7l1n" path="res://Resources/crosshair.png" id="4_it787"]
+[ext_resource type="Texture2D" uid="uid://c8bik4dfa6lna" path="res://Resources/Textures/Hitmarker (Custom).png" id="4_j21br"]
+[ext_resource type="AudioStream" uid="uid://df7tmyislr06a" path="res://Resources/Sounds/1202_footsteps-02.wav" id="6_qa6u4"]
+[ext_resource type="AudioStream" uid="uid://btr1pxkhkoyt5" path="res://Resources/Sounds/1418_gunshot-01.wav" id="8_2avjl"]
 [ext_resource type="Script" path="res://Scenes/Abilities/Interact.gd" id="12_smae0"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_emkox"]
@@ -37,13 +40,14 @@ properties/4/spawn = true
 properties/4/sync = true
 properties/4/watch = false
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("health")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("gunshot_emitter", "health")]
 collision_layer = 8
 collision_mask = 3
 platform_on_leave = 2
 platform_floor_layers = 4294901761
 platform_wall_layers = 2
 script = ExtResource("1_1w47b")
+gunshot_emitter = NodePath("GunAudioEmitter")
 health = NodePath("HealthComponent")
 
 [node name="CollisionShape3d" type="CollisionShape3D" parent="."]
@@ -72,7 +76,22 @@ collide_with_areas = true
 visible = false
 equipment_manager = NodePath("../../../EquipmentManager")
 
-[node name="TextureRect" type="TextureRect" parent="Head/Camera3d"]
+[node name="CrosshairControl" type="Control" parent="Head/Camera3d"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Crosshair" type="TextureRect" parent="Head/Camera3d/CrosshairControl"]
+layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -84,11 +103,30 @@ offset_right = 25.0
 offset_bottom = 25.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("4_it787")
+texture = ExtResource("3_cxjrq")
 stretch_mode = 2
+
+[node name="Hitmarker" type="TextureRect" parent="Head/Camera3d/CrosshairControl"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -25.0
+offset_top = -25.0
+offset_right = 25.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_j21br")
 
 [node name="Respawn_Anchor" type="Node3D" parent="."]
 top_level = true
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("4_5eg73")
 
 [node name="HitboxComponent" type="Area3D" parent="."]
 collision_layer = 4
@@ -98,8 +136,15 @@ script = ExtResource("3_4c68y")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="HitboxComponent"]
 shape = SubResource("CapsuleShape3D_f8o23")
 
-[node name="HealthComponent" type="Node" parent="."]
-script = ExtResource("4_5eg73")
+[node name="MovementAudioEmitter" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("6_qa6u4")
+attenuation_model = 1
+autoplay = true
+max_polyphony = 2
+
+[node name="GunAudioEmitter" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("8_2avjl")
+volume_db = -12.308
 
 [node name="EquipmentManager" type="Node" parent="."]
 script = ExtResource("3_detgp")

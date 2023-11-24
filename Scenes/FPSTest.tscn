@@ -15,7 +15,7 @@ background_mode = 2
 background_color = Color(0.2139, 0.570975, 0.69, 1)
 sky = SubResource("Sky_ivwug")
 
-[node name="Node3d" type="Node3D"]
+[node name="Map" type="Node3D"]
 script = ExtResource("1_vcpax")
 PlayerScene = ExtResource("2_2yu7n")
 

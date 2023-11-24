@@ -15,6 +15,9 @@ func _process(delta):
 
 func _on_menu_button_button_down():
 	get_tree().change_scene_to_file("res://Scenes/MainMenu/MainMenu.tscn")
+	for c in get_tree().root.get_children():
+		if c.name == "Map":
+			c.queue_free()
 
 func toggle_ability(name):
 	if equipment_manager.has_ability(name):

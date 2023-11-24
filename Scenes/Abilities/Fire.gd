@@ -6,6 +6,7 @@ extends Node
 @rpc("any_peer", "call_local")
 func use():
 	var gunRay = player.hitboxRay
+	player.gunshot_emitter.play()
 	if not gunRay.is_colliding():
 		return
 	if gunRay.get_collider() is HitboxComponent:
