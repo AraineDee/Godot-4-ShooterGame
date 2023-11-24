@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://fdntlakw1c1c"]
 
 [ext_resource type="Script" path="res://Scenes/MainMenu/MainMenu.gd" id="1_6u0rg"]
-[ext_resource type="PackedScene" uid="uid://ssi53sieinr7" path="res://Scenes/Obstacle Course 1.tscn" id="2_vg2j4"]
+[ext_resource type="PackedScene" uid="uid://bh3iw6m0q2xmv" path="res://Scenes/Underdog.tscn" id="2_x1mtk"]
 [ext_resource type="PackedScene" uid="uid://pg7jxvoujq3d" path="res://Scenes/FPSTest.tscn" id="3_oluek"]
 
 [node name="MainMenu" type="Control"]
@@ -12,7 +12,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_6u0rg")
-obstacle_course_scene = ExtResource("2_vg2j4")
+obstacle_course_scene = ExtResource("2_x1mtk")
 range_scene = ExtResource("3_oluek")
 
 [node name="PlayButton" type="Button" parent="." groups=["Main"]]

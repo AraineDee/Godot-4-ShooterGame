@@ -5,6 +5,10 @@ extends Control
 
 @export var port = 8910
 
+var new_scene : PackedScene
+
+var is_host
+
 var address
 var peer
 
@@ -42,10 +46,10 @@ func connection_failed():
 	print("Couldnt Connect")
 
 @rpc("any_peer")
-func SendPlayerInformation(name, id):
+func SendPlayerInformation(player_name, id):
 	if !GameManager.Players.has(id):
 		GameManager.Players[id] ={
-			"name" : name,
+			"name" : player_name,
 			"id" : id,
 			"score": 0
 		}
@@ -54,8 +58,18 @@ func SendPlayerInformation(name, id):
 		for i in GameManager.Players:
 			SendPlayerInformation.rpc(GameManager.Players[i].name, i)
 
+@rpc("any_peer", "call_local")
+func set_scene_range():
+	new_scene = range_scene
+	
+@rpc("any_peer", "call_local")
+func set_scene_obby():
+	new_scene = obstacle_course_scene
+
 @rpc("any_peer","call_local")
-func StartGame(new_scene):
+func StartGame():
+	if !is_host:
+		AudioServer.set_bus_mute(0, true)
 	var sceneInst = new_scene.instantiate()
 	get_tree().root.add_child(sceneInst)
 	self.queue_free()
@@ -67,8 +81,9 @@ func hostGame():
 		print("cannot host: " + error)
 		return
 	peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
-	
+		
 	multiplayer.set_multiplayer_peer(peer)
+	is_host = true
 	print("Waiting For Players!")
 	
 	
@@ -83,6 +98,7 @@ func _on_join_button_down():
 	peer.create_client(address, port)
 	peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
 	multiplayer.set_multiplayer_peer(peer)
+	is_host = false
 
 
 func _on_play_button_button_down():
@@ -100,14 +116,18 @@ func _on_quit_button_down():
 
 func _on_obstacle_course_button_down():
 	if peer == null:
-		SendPlayerInformation($NameEdit.text, 1)	
-	StartGame.rpc(obstacle_course_scene)
+		is_host = true
+		SendPlayerInformation($NameEdit.text, 1)
+	set_scene_obby.rpc()
+	StartGame.rpc()
 
 
 func _on_range_button_down():
 	if peer == null:
-		SendPlayerInformation($NameEdit.text, 1)	
-	StartGame.rpc(range_scene)
+		SendPlayerInformation($NameEdit.text, 1)
+		is_host = true
+	set_scene_range.rpc()
+	StartGame.rpc()
 	
 @rpc("any_peer", "call_local")
 func _go_to_scene(scene):
@@ -125,7 +145,7 @@ func _input(event):
 		if listening_for_keybind:
 			update_bind(new_bind_name, event)
 
-func update_bind(name, event):
+func update_bind(_name, event):
 	InputMap.action_erase_events(new_bind_name)
 	InputMap.action_add_event(new_bind_name, event)
 	listening_for_keybind = false

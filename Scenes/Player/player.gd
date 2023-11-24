@@ -5,6 +5,9 @@ extends CharacterBody3D
 @onready var Cam = $Head/Camera3d as Camera3D
 @onready var Equipment_Manager = $EquipmentManager
 
+@onready var hitmarker = $Head/Camera3d/CrosshairControl/Hitmarker as Control
+var hitmarker_time = 0.5
+
 @export var gunshot_emitter : AudioStreamPlayer3D
 @export var health : Node
 
@@ -45,13 +48,27 @@ func _ready():
 	$MultiplayerSynchronizer.set_multiplayer_authority(authority)
 	if str(authority) == str(multiplayer.get_unique_id()):
 		Cam.current = true
+#	else:
+#		$Head/Camera3d/PauseMenu.queue_free()
+#		$Head/Camera3d/CrosshairControl.queue_free()
 	#Captures mouse and stops rgun from hitting yourself
 	bodyRay.add_exception(self)
 	hitboxRay.add_exception(self)
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func is_local_player():
+	if multiplayer.get_peers().size() == 0:
+		return true
 	return $MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
+
+func _process(delta):
+	if not is_local_player():
+		return
+	
+	if hitmarker_time < delta:
+		hitmarker.visible = false
+	else:
+		hitmarker_time -= delta
 
 func _physics_process(delta):
 	if not is_local_player():
@@ -60,7 +77,7 @@ func _physics_process(delta):
 	_process_movement(delta)
 
 
-func _process_input(delta):
+func _process_input(_delta):
 	input_dir = Input.get_vector("moveLeft", "moveRight", "moveFoward", "moveBack")
 	if(input_dir.is_equal_approx(Vector2.ZERO)):
 		movement_state = INPUTMOVEMENTSTATE.IDLE
@@ -83,7 +100,9 @@ func _input(event):
 		if(event.is_action_pressed("Pause")): #if key is "escape"
 			$Head/Camera3d/PauseMenu.visible = !$Head/Camera3d/PauseMenu.visible
 			_swap_mouse_mode()
-	
+		if(event.is_action_pressed("Respawn")):
+			die()
+				
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		if not on_turret:
 			rotation.y -= event.relative.x / mouseSensitivity
@@ -98,13 +117,12 @@ func _swap_mouse_mode():
 	else:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
-
 var friction_mod = 1
 func _process_movement(delta):
 	if velocity.length() > 0.1 and is_on_floor():
-		$MovementAudioEmitter.volume_db = 0
+		movement_audio_set_pause.rpc(false)
 	else: 
-		$MovementAudioEmitter.volume_db = -100
+		movement_audio_set_pause.rpc(true)
 	
 	if on_turret:
 		_handle_turret_movement(delta)
@@ -231,14 +249,14 @@ func _handle_grapple_movement(_delta):
 		#apply force inward
 		velocity += position.direction_to(grappleInst.position) * (dist-grapple_length)
 
-func _handle_zipline_movement(delta):
+func _handle_zipline_movement(_delta):
 	velocity = velocity.project(ziplineInst.dir_normal)
 
 func attach_to_zipline():
 	var pos_diff = (position - ziplineInst.anchor1.global_position) as Vector3
 	position -= (pos_diff - pos_diff.project(ziplineInst.dir_normal))
 
-func _handle_turret_movement(delta):
+func _handle_turret_movement(_delta):
 	velocity = Vector3.ZERO
 	position = turretInst.get_gunner_position()
 	rotation.y = turretInst.get_gunner_rotation()
@@ -275,14 +293,27 @@ func respawn():
 	velocity = Vector3.ZERO
 	set_position($Respawn_Anchor.position)
 
-
+@rpc("any_peer","call_local")
 func set_respawn(pos : Vector3):
 	$Respawn_Anchor.set_position(pos)
+
+
+@rpc("any_peer", "call_local")
+func movement_audio_set_pause(paused : bool):
+	$MovementAudioEmitter.stream_paused = paused
 
 
 func on_hit(damage):
 	health.take_damage(damage)
 	
+func hit_made(_collider):
+	if is_local_player():
+		hitmarker.visible = true
+		hitmarker_time = 0.1
+	
+func set_points_label(points):
+	$Head/Camera3d/PauseMenu/EquipmentSelect/PointsLabel.text = "Points: " + str(points)
+	
 func die():
+	get_parent().player_died(self)
 	health.health = 100
-	respawn()

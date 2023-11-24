@@ -132,6 +132,14 @@ offset_bottom = 133.0
 toggle_mode = true
 text = "Slide"
 
+[node name="PointsLabel" type="Label" parent="EquipmentSelect"]
+layout_mode = 0
+offset_left = -4.0
+offset_top = 602.0
+offset_right = 63.0
+offset_bottom = 628.0
+text = "Points: 0"
+
 [connection signal="button_down" from="MenuButton" to="." method="_on_menu_button_button_down"]
 [connection signal="toggled" from="EquipmentSelect/Grapple" to="." method="_on_grapple_toggled"]
 [connection signal="toggled" from="EquipmentSelect/Reel" to="." method="_on_reel_toggled"]

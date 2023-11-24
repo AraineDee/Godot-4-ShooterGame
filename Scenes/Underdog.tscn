@@ -1,0 +1,51 @@
+[gd_scene load_steps=7 format=3 uid="uid://bh3iw6m0q2xmv"]
+
+[ext_resource type="Script" path="res://Scenes/Map.gd" id="1_kg8fj"]
+[ext_resource type="PackedScene" uid="uid://dj26sacnhty4r" path="res://addons/devblocks/blocks/basic_block.tscn" id="2_1x43e"]
+[ext_resource type="PackedScene" uid="uid://7gv6q50fuutj" path="res://Scenes/Player/player.tscn" id="2_rgkn2"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_hupvj"]
+
+[sub_resource type="Sky" id="Sky_ivwug"]
+sky_material = SubResource("ProceduralSkyMaterial_hupvj")
+
+[sub_resource type="Environment" id="Environment_ja1ik"]
+background_mode = 2
+background_color = Color(0.2139, 0.570975, 0.69, 1)
+sky = SubResource("Sky_ivwug")
+
+[node name="Map" type="Node3D"]
+script = ExtResource("1_kg8fj")
+PlayerScene = ExtResource("2_rgkn2")
+gamemode = 1
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ja1ik")
+
+[node name="DirectionalLight3d" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.966349, 0.250904, -0.056709, 0.182362, -0.512743, 0.838951, 0.181419, -0.821061, -0.541244, -0.00693703, 59.5145, -109.348)
+light_energy = 1.232
+light_indirect_energy = 0.884
+light_volumetric_fog_energy = 0.768
+shadow_enabled = true
+
+[node name="BasicBlock" parent="." instance=ExtResource("2_1x43e")]
+transform = Transform3D(50, 0, 0, 0, 0.1, 0, 0, 0, 50, 0, 0, 0)
+
+[node name="Spawn0" type="Node3D" parent="." groups=["PlayerSpawnPoint"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 3.46541)
+
+[node name="Spawn1" type="Node3D" parent="." groups=["PlayerSpawnPoint"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.67521, 0.256485, 0)
+
+[node name="Spawn2" type="Node3D" parent="." groups=["PlayerSpawnPoint"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0500001, -5.4797)
+
+[node name="Spawn3" type="Node3D" parent="." groups=["PlayerSpawnPoint"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.48717, 0.05, 0)
+
+[node name="Spawn4" type="Node3D" parent="." groups=["PlayerSpawnPoint"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.41909, 0.05, -3.88508)
+
+[node name="Spawn5" type="Node3D" parent="." groups=["PlayerSpawnPoint"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.33307, 0.0500001, 3.63111)

@@ -11,6 +11,7 @@ func use():
 		return
 	if gunRay.get_collider() is HitboxComponent:
 		gunRay.get_collider().on_hit(25)
+		player.hit_made(gunRay.get_collider())
 		return
 	var bulletInst = bullet_scene.instantiate() as Node3D
 	bulletInst.set_as_top_level(true)
@@ -24,7 +25,7 @@ func un_use(_player):
 
 func _input(event):
 	if not player.is_local_player():
-		return 
+		return
 	if event.is_action_pressed("Fire"):
 		use.rpc()
 		
