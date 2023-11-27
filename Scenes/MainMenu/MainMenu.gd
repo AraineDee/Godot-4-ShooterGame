@@ -2,6 +2,7 @@ extends Control
 
 @export var obstacle_course_scene : PackedScene
 @export var range_scene : PackedScene
+@onready var lobby_scene = load("res://Scenes/Lobby/lobby.tscn") as PackedScene
 
 @export var port = 8910
 
@@ -14,12 +15,28 @@ var peer
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	remove_custom_commands()
+	Console.add_command("bind", bind_command, 1)
+	
+	clear_gm_players()
+	multiplayer.multiplayer_peer = null
+	
 	multiplayer.peer_connected.connect(peer_connected)
 	multiplayer.peer_disconnected.connect(peer_disconnected)
 	multiplayer.connected_to_server.connect(connected_to_server)
 	multiplayer.connection_failed.connect(connection_failed)
 	if "--server" in OS.get_cmdline_args():
 		hostGame()
+		go_to_lobby()
+
+func remove_custom_commands():
+	Console.remove_command("bind")
+	Console.remove_command("reset_map")
+	Console.remove_command("kill")
+	Console.remove_command("add_score")
+
+func clear_gm_players():
+	GameManager.Players = {}
 
 # this get called on the server and clients
 func peer_connected(id):
@@ -39,24 +56,13 @@ func peer_disconnected(id):
 # called only from clients
 func connected_to_server():
 	print("connected To Server!")
-	SendPlayerInformation.rpc_id(1, $NameEdit.text, multiplayer.get_unique_id())
+	GameManager.SendPlayerInformation.rpc_id(1, $NameEdit.text, multiplayer.get_unique_id())
+	go_to_lobby()
 
 # called only from clients
 func connection_failed():
 	print("Couldnt Connect")
 
-@rpc("any_peer")
-func SendPlayerInformation(player_name, id):
-	if !GameManager.Players.has(id):
-		GameManager.Players[id] ={
-			"name" : player_name,
-			"id" : id,
-			"score": 0
-		}
-	
-	if multiplayer.is_server():
-		for i in GameManager.Players:
-			SendPlayerInformation.rpc(GameManager.Players[i].name, i)
 
 @rpc("any_peer", "call_local")
 func set_scene_range():
@@ -68,8 +74,10 @@ func set_scene_obby():
 
 @rpc("any_peer","call_local")
 func StartGame():
+	#REMOVE THIS!!!
 	if !is_host:
 		AudioServer.set_bus_mute(0, true)
+	
 	var sceneInst = new_scene.instantiate()
 	get_tree().root.add_child(sceneInst)
 	self.queue_free()
@@ -86,10 +94,18 @@ func hostGame():
 	is_host = true
 	print("Waiting For Players!")
 	
-	
+
+@rpc("authority")
+func go_to_lobby():
+	var lobbyInst = lobby_scene.instantiate()
+	get_tree().root.add_child(lobbyInst)
+	self.queue_free()
+
 func _on_host_button_down():
 	hostGame()
-	SendPlayerInformation($NameEdit.text, multiplayer.get_unique_id())
+	GameManager.SendPlayerInformation($NameEdit.text, multiplayer.get_unique_id())
+	go_to_lobby()
+	
 
 
 func _on_join_button_down():
@@ -99,7 +115,6 @@ func _on_join_button_down():
 	peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
 	multiplayer.set_multiplayer_peer(peer)
 	is_host = false
-
 
 func _on_play_button_button_down():
 	for button in get_tree().get_nodes_in_group("PlayOptions"):
@@ -117,14 +132,14 @@ func _on_quit_button_down():
 func _on_obstacle_course_button_down():
 	if peer == null:
 		is_host = true
-		SendPlayerInformation($NameEdit.text, 1)
+		GameManager.SendPlayerInformation($NameEdit.text, 1)
 	set_scene_obby.rpc()
 	StartGame.rpc()
 
 
 func _on_range_button_down():
 	if peer == null:
-		SendPlayerInformation($NameEdit.text, 1)
+		GameManager.SendPlayerInformation($NameEdit.text, 1)
 		is_host = true
 	set_scene_range.rpc()
 	StartGame.rpc()
@@ -133,9 +148,14 @@ func _on_range_button_down():
 func _go_to_scene(scene):
 	get_tree().change_scene_to_packed(scene)
 
-
 var new_bind_name = ""
 var listening_for_keybind := false
+func bind_command(bind_name : String):
+	Console.print_line("Listening...")
+	listening_for_keybind = true
+	new_bind_name = bind_name
+	Console.toggle_console()
+
 func _input(event):
 	if event is InputEventKey and event.is_pressed():
 		if listening_for_keybind:
@@ -145,12 +165,14 @@ func _input(event):
 		if listening_for_keybind:
 			update_bind(new_bind_name, event)
 
-func update_bind(_name, event):
+func update_bind(name, event):
 	InputMap.action_erase_events(new_bind_name)
 	InputMap.action_add_event(new_bind_name, event)
 	listening_for_keybind = false
 	for button in get_tree().get_nodes_in_group("KeyBinds"):
 		button.set_pressed(false)
+	Console.print_line(name + " has been set to: " + event.to_string())
+	Console.toggle_console()
 
 
 func _on_pause_bind_button_down():

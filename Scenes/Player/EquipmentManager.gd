@@ -2,7 +2,7 @@ extends Node
 
 @onready var player = get_parent() as CharacterBody3D
 
-var points = 0
+@export var points = 0
 
 
 @onready var ability_classes = {
@@ -14,6 +14,13 @@ var points = 0
 	"Zipline" : load("res://Scenes/Abilities/ZiplineAbility.gd"),
 	"Grenade" : load("res://Scenes/Abilities/GrenadeAbility.gd"),
 	"Turret" : load("res://Scenes/Abilities/TurretAbility.gd")
+}
+
+var ability_count = {
+	"Grenade" : 0,
+	"Zipline" : 0,
+	"Mine" : 0,
+	"Turret" : 0
 }
 
 var ability_cost = {
@@ -83,6 +90,36 @@ func remove_ability(ability_name):
 		ability_dict[ability_name].queue_free()
 		ability_dict.erase(ability_name)
 
+
+func get_consumable_count(ability_name):
+	return ability_count[ability_name]
+
+@rpc("any_peer","call_local")
+func increment_consumable(ability_name):
+	if points < ability_cost[ability_name]:
+		return
+	if ability_count[ability_name] <= 0:
+		add_ability(ability_name)
+	ability_count[ability_name] += 1
+	
+
+@rpc("any_peer","call_local")
+func decrement_consumable(ability_name):
+	if ability_count[ability_name] <= 0:
+		return
+	elif ability_count[ability_name] == 1:
+		remove_ability(ability_name)
+	else:
+		set_points(points + ability_cost[ability_name])
+		ability_count[ability_name] -= 1
+
+@rpc("any_peer", "call_local")
+func use_consumable(ability_name):
+	ability_count[ability_name] -= 1
+	if ability_count[ability_name] == 0:
+		var temp_points = points
+		remove_ability.rpc(ability_name)
+		set_points(temp_points)
 
 func has_movement(movement_name):
 	for a in movement_dict:

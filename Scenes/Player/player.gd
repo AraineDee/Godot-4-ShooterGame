@@ -8,6 +8,8 @@ extends CharacterBody3D
 @onready var hitmarker = $Head/Camera3d/CrosshairControl/Hitmarker as Control
 var hitmarker_time = 0.5
 
+var last_damage_source 
+
 @export var gunshot_emitter : AudioStreamPlayer3D
 @export var health : Node
 
@@ -102,7 +104,13 @@ func _input(event):
 			_swap_mouse_mode()
 		if(event.is_action_pressed("Respawn")):
 			die()
-				
+		
+		if(event.is_action_pressed("Scoreboard")):
+			$Head/Camera3d/Scoreboard.visible = true
+		
+		if(event.is_action_released("Scoreboard")):
+			$Head/Camera3d/Scoreboard.visible = false
+			
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		if not on_turret:
 			rotation.y -= event.relative.x / mouseSensitivity
@@ -303,17 +311,23 @@ func movement_audio_set_pause(paused : bool):
 	$MovementAudioEmitter.stream_paused = paused
 
 
-func on_hit(damage):
+func on_hit(source, damage):
+	last_damage_source = source
 	health.take_damage(damage)
 	
 func hit_made(_collider):
 	if is_local_player():
 		hitmarker.visible = true
 		hitmarker_time = 0.1
-	
+
+func got_kill(player):
+	get_parent().got_kill(self, player)
+
 func set_points_label(points):
 	$Head/Camera3d/PauseMenu/EquipmentSelect/PointsLabel.text = "Points: " + str(points)
 	
 func die():
+	if last_damage_source is CharacterBody3D and last_damage_source != self:
+		last_damage_source.got_kill(self)
 	get_parent().player_died(self)
 	health.health = 100

@@ -10,7 +10,7 @@ func use():
 	if not gunRay.is_colliding():
 		return
 	if gunRay.get_collider() is HitboxComponent:
-		gunRay.get_collider().on_hit(25)
+		gunRay.get_collider().on_hit(player, 25)
 		player.hit_made(gunRay.get_collider())
 		return
 	var bulletInst = bullet_scene.instantiate() as Node3D

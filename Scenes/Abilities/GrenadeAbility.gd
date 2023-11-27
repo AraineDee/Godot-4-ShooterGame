@@ -11,6 +11,7 @@ func throw_grenade():
 	player.get_parent().add_child(grenadeInst)
 	grenadeInst.position = player.position + Vector3(0, 0.8, 0)
 	grenadeInst.apply_central_impulse(15 * Vector3.FORWARD.rotated(Vector3.RIGHT, player.Cam.rotation.x).rotated(Vector3.UP, player.rotation.y))
+	player.Equipment_Manager.use_consumable("Grenade")
 	
 
 func _input(event):

@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=3 uid="uid://dj71q2gkjnvk2"]
+
+[ext_resource type="Script" path="res://Scenes/Player/Scoreboard/PlayerScoreBar.gd" id="1_352a6"]
+
+[node name="PlayerScoreBar" type="Control" groups=["player_score_bars"]]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_352a6")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 129.0
+offset_bottom = 24.0
+color = Color(0.223529, 0.223529, 0.223529, 1)
+
+[node name="NameLabel" type="Label" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Name"
+
+[node name="ScoreLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 112.0
+offset_right = 152.0
+offset_bottom = 26.0
+text = "0"

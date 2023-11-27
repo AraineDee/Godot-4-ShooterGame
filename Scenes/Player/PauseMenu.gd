@@ -2,6 +2,10 @@ extends Control
 
 @export var equipment_manager : Node
 
+func _ready():
+	for i in get_tree().get_nodes_in_group("ConsumableUI"):
+		i.equipment_manager = equipment_manager
+
 func _on_menu_button_button_down():
 	get_tree().change_scene_to_file("res://Scenes/MainMenu/MainMenu.tscn")
 	for c in get_tree().root.get_children():
@@ -31,10 +35,6 @@ func _on_reel_toggled(_button_pressed):
 
 func _on_blast_toggled(_button_pressed):
 	toggle_ability("Blast")
-
-
-func _on_grenade_toggled(_button_pressed):
-	toggle_ability("Grenade")
 
 
 func _on_mine_toggled(_button_pressed):

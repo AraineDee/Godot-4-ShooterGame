@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://7gv6q50fuutj"]
+[gd_scene load_steps=17 format=3 uid="uid://7gv6q50fuutj"]
 
 [ext_resource type="Script" path="res://Scenes/Player/player.gd" id="1_1w47b"]
 [ext_resource type="PackedScene" uid="uid://dyu1p85lcff34" path="res://Scenes/Player/PauseMenu.tscn" id="2_ayof8"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://Scenes/Components/HealthComponent.gd" id="4_5eg73"]
 [ext_resource type="Script" path="res://Scenes/Abilities/Fire.gd" id="4_gbn3t"]
 [ext_resource type="Texture2D" uid="uid://c8bik4dfa6lna" path="res://Resources/Textures/Hitmarker (Custom).png" id="4_j21br"]
+[ext_resource type="PackedScene" uid="uid://45mhn2aniiby" path="res://Scenes/Player/Scoreboard/scoreboard.tscn" id="5_r4ybc"]
 [ext_resource type="AudioStream" uid="uid://df7tmyislr06a" path="res://Resources/Sounds/1202_footsteps-02.wav" id="6_qa6u4"]
 [ext_resource type="AudioStream" uid="uid://btr1pxkhkoyt5" path="res://Resources/Sounds/1418_gunshot-01.wav" id="8_2avjl"]
 [ext_resource type="Script" path="res://Scenes/Abilities/Interact.gd" id="12_smae0"]
@@ -39,6 +40,10 @@ properties/4/path = NodePath("Respawn_Anchor:position")
 properties/4/spawn = true
 properties/4/sync = true
 properties/4/watch = false
+properties/5/path = NodePath("EquipmentManager:points")
+properties/5/spawn = true
+properties/5/sync = true
+properties/5/watch = false
 
 [node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("gunshot_emitter", "health")]
 collision_layer = 8
@@ -121,6 +126,9 @@ offset_bottom = 25.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("4_j21br")
+
+[node name="Scoreboard" parent="Head/Camera3d" instance=ExtResource("5_r4ybc")]
+visible = false
 
 [node name="Respawn_Anchor" type="Node3D" parent="."]
 top_level = true

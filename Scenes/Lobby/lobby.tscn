@@ -1,0 +1,56 @@
+[gd_scene load_steps=4 format=3 uid="uid://cu2gkerpkh55"]
+
+[ext_resource type="Script" path="res://Scenes/Lobby/lobby.gd" id="1_dt4h6"]
+[ext_resource type="PackedScene" uid="uid://be11737nv6cv1" path="res://Scenes/Lobby/player_bar.tscn" id="2_wxfj5"]
+[ext_resource type="PackedScene" uid="uid://bh3iw6m0q2xmv" path="res://Scenes/Underdog.tscn" id="3_buomb"]
+
+[node name="Lobby" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_dt4h6")
+_player_bar_scene = ExtResource("2_wxfj5")
+_map_scene = ExtResource("3_buomb")
+
+[node name="Players" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -324.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="StartButton" type="Button" parent="."]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+disabled = true
+text = "Start"
+
+[node name="ReadyButton" type="Button" parent="."]
+layout_mode = 0
+offset_top = 31.0
+offset_right = 46.0
+offset_bottom = 62.0
+text = "Ready"
+
+[node name="WinnerArea" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_right = 40.0
+grow_vertical = 0
+
+[node name="WinnerLabel" type="Label" parent="WinnerArea"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[connection signal="button_down" from="StartButton" to="." method="_on_start_button_button_down"]

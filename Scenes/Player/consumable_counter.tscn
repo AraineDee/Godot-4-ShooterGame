@@ -1,0 +1,44 @@
+[gd_scene load_steps=2 format=3 uid="uid://dcs0ipuiwekc7"]
+
+[ext_resource type="Script" path="res://Scenes/Player/ConsumableCounter.gd" id="1_lnjn2"]
+
+[node name="ConsumableCounter" type="Control" groups=["ConsumableUI"]]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lnjn2")
+
+[node name="AbilityName" type="Label" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Ability"
+
+[node name="Counter" type="Label" parent="."]
+layout_mode = 0
+offset_left = 107.0
+offset_top = 1.0
+offset_right = 147.0
+offset_bottom = 27.0
+text = "0"
+
+[node name="Decrement" type="Button" parent="."]
+layout_mode = 0
+offset_left = 80.0
+offset_top = 1.0
+offset_right = 95.0
+offset_bottom = 32.0
+scale = Vector2(1.62, 0.81)
+text = "-"
+
+[node name="Increment" type="Button" parent="."]
+layout_mode = 0
+offset_left = 120.0
+offset_top = 1.0
+offset_right = 138.0
+offset_bottom = 36.0
+scale = Vector2(1.39, 0.695)
+text = "+"
